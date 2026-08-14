@@ -2,18 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define byte unsigned char
+#define ull unsigned long long
+
 char* covert_into_text();
 size_t file_len(FILE *fp);
-unsigned char* read_file_bytes(FILE *fp);
+byte* read_file_bytes(FILE *fp);
 
 int main() {
     FILE *file = fopen("../Makefile-1", "r");
+    if (!file) {
+        perror("Error when opening file");
+        return 1;
+    }
 
-    unsigned char* buffer = read_file_bytes(file);
+    byte* buffer = read_file_bytes(file);
+    size_t len = strlen((char*)buffer);
 
-    size_t len = strlen(buffer);
     for (size_t i = 0; i < len;i++ ) {
-        printf("%02X ", (unsigned char)buffer[i]);
+        printf("%02X ", buffer[i]);
     }
 
     scanf("No format");
@@ -23,15 +30,17 @@ int main() {
     return 0;
 }
 
-unsigned char* read_file_bytes(FILE *fp) {
-    const unsigned long long fl = file_len(fp);
-    unsigned char* buffer = malloc(fl);
-    int c;
-    unsigned long long i = 0;
+
+
+byte* read_file_bytes(FILE *fp) {
+    const ull fl = file_len(fp);
+    byte* buffer = malloc(fl + 1);
+    int c; ull i = 0;
     while ((c=getc(fp)) != EOF) {
         buffer[i] = c;
         i++;
     }
+    buffer[i] = '\0';
     rewind(fp);
     return buffer;
 }
